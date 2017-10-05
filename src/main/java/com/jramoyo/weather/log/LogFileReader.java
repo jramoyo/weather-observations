@@ -3,9 +3,8 @@ package com.jramoyo.weather.log;
 import com.jramoyo.weather.Observation;
 import com.jramoyo.weather.Statistics;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Map;
 import java.util.Optional;
 
 public class LogFileReader {
@@ -31,21 +30,39 @@ public class LogFileReader {
         }
     }
 
+    public String createReport(String observatory) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Minimum Temperature      : ").append(statistics.getMinTemperature(observatory)).append('\n');
+        sb.append("Maximum Temperature      : ").append(statistics.getMaxTemperature(observatory)).append('\n');
+        sb.append("Mean Temperature         : ").append(statistics.getMeanTemperature(observatory)).append('\n');
+        sb.append("Total Distance Travelled : ").append(statistics.getTotalDistanceTravelled(observatory)).append('\n');
+        sb.append('\n');
+        sb.append("Observations from each Observatory:").append("\n\n");
+        for (Map.Entry<String, Integer> entry : statistics.getDistribution().entrySet()) {
+            sb.append("  ").append(entry.getKey()).append(" : ").append(entry.getValue()).append('\n');
+        }
+
+        return sb.toString();
+    }
+
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.err.println("Usage LogFileReader <file_name>");
+        if (args.length != 3) {
+            System.err.println("Usage LogFileReader <input_file_name> <report_file_name> <observatory>");
             System.exit(1);
         }
 
-        String fileName = args[0];
+        String infileName = args[0];
+        String outFileName = args[1];
+        String observatory = args[2];
 
-        try {
-            System.out.println(String.format("Reading log file: %s", fileName));
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outFileName))) {
+            System.out.println(String.format("Reading log file: %s, locale: %s", infileName, observatory));
 
             long start = System.currentTimeMillis();
-            LogFileReader read = new LogFileReader(new Statistics());
-            read.read(fileName);
+            LogFileReader reader = new LogFileReader(new Statistics());
+            reader.read(infileName);
 
+            bw.append(reader.createReport(observatory));
             System.out.println(String.format("Done, elapsed: %d ms", System.currentTimeMillis() - start));
         } catch (IOException ex) {
             System.err.println("An error occurred while reading log file.");

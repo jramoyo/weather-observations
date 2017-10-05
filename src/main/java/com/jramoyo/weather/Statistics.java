@@ -1,10 +1,7 @@
 package com.jramoyo.weather;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public final class Statistics {
 
@@ -12,7 +9,7 @@ public final class Statistics {
     private long skipped = 0;
     private Date lastTimestamp;
 
-    private Map<String, Integer> distribution = new HashMap<>();
+    private Map<String, Integer> distribution = new TreeMap<>();
 
     private BigDecimal minTemperature = round(BigDecimal.valueOf(Integer.MAX_VALUE));
     private BigDecimal maxTemperature = round(BigDecimal.valueOf(Integer.MIN_VALUE));

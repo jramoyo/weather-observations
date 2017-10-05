@@ -27,7 +27,7 @@ public class LogFileGenerator {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
+        if (args.length != 2) {
             System.err.println("Usage LogFileGenerator <file_name> <no_of_entries>");
             System.exit(1);
         }
