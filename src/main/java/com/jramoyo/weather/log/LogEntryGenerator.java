@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class LogEntryGenerator {
 
+    // controls the occurrence of erroneous entries in the log
     private static final int MISSING_FIELD_PERCENTAGE = 10;
     private static final int INVALID_FIELD_PERCENTAGE = 10;
     private static final int UNORDERED_DATE_PERCENTAGE = 10;
@@ -41,10 +42,10 @@ public final class LogEntryGenerator {
             modifier = position - randomInt(1, 60); // step back to an hour
         }
 
-        long multiplier = 60_000;
+        long minutes = 60_000;
         long time = startDate.getTime();
 
-        Date newDate = new Date(time + (modifier * multiplier));
+        Date newDate = new Date(time + (modifier * minutes)); // every log entry position is 1 minute apart
         return new SimpleDateFormat(pattern).format(newDate);
     }
 

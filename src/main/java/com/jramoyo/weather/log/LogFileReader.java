@@ -46,14 +46,14 @@ public class LogFileReader {
     }
 
     public static void main(String[] args) {
-        if (args.length != 3) {
-            System.err.println("Usage LogFileReader <input_file_name> <report_file_name> <observatory>");
+        if (args.length < 2) {
+            System.err.println("Usage LogFileReader <input_file_name> <report_file_name> [<locale>]");
             System.exit(1);
         }
 
         String infileName = args[0];
         String outFileName = args[1];
-        String observatory = args[2];
+        String observatory = args.length == 3 ? args[2] : null;
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outFileName))) {
             System.out.println(String.format("Reading log file: %s, locale: %s", infileName, observatory));
