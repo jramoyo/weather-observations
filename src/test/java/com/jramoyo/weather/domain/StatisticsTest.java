@@ -1,4 +1,4 @@
-package com.jramoyo.weather;
+package com.jramoyo.weather.domain;
 
 import com.jramoyo.weather.domain.Observation;
 import com.jramoyo.weather.domain.Statistics;
