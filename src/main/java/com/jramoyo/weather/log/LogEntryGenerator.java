@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static java.lang.String.format;
-
 public final class LogEntryGenerator {
 
     private static final int MISSING_FIELD_PERCENTAGE = 10;
@@ -24,8 +22,7 @@ public final class LogEntryGenerator {
         String observatory = generateObservatory();
         String location = generateLocation(observatory);
         String temperature = generateTemperature(observatory);
-
-        return format("%s|%s|%s|%s", timestamp, location, temperature, observatory);
+        return timestamp + '|' + location + '|' + temperature + '|' + observatory;
     }
 
     private String generateTimestamp(long position) {
@@ -52,14 +49,14 @@ public final class LogEntryGenerator {
     }
 
     private String generateLocation(String observatory) {
-        String pattern = "%d,%d";
+        char delimiter = ',';
 
         if (shouldError(MISSING_FIELD_PERCENTAGE)) {
             return "";
         }
 
         if (shouldError(INVALID_FIELD_PERCENTAGE)) {
-            pattern = "%d;%d";
+            delimiter = ';';
         }
 
         int x;
@@ -80,7 +77,7 @@ public final class LogEntryGenerator {
                 y = randomInt(0, 1000);    // km
         }
 
-        return format(pattern, x, y);
+        return "" + x + delimiter + y;
     }
 
     private String generateTemperature(String observatory) {
@@ -106,7 +103,7 @@ public final class LogEntryGenerator {
                 temperature = randomInt(173, 373);  // kelvin
         }
 
-        return format("%d", temperature);
+        return "" + temperature;
     }
 
     private String generateObservatory() {
