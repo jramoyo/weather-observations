@@ -1,7 +1,7 @@
 package com.jramoyo.weather.log;
 
-import com.jramoyo.weather.Observation;
-import com.jramoyo.weather.Statistics;
+import com.jramoyo.weather.domain.Observation;
+import com.jramoyo.weather.domain.Statistics;
 
 import java.io.*;
 import java.util.Map;

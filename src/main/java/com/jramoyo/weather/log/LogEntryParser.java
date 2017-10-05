@@ -1,6 +1,6 @@
 package com.jramoyo.weather.log;
 
-import com.jramoyo.weather.Observation;
+import com.jramoyo.weather.domain.Observation;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;

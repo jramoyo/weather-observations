@@ -1,4 +1,4 @@
-package com.jramoyo.weather;
+package com.jramoyo.weather.domain;
 
 import java.math.BigDecimal;
 import java.util.*;

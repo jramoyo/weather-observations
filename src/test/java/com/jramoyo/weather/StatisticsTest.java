@@ -1,5 +1,7 @@
 package com.jramoyo.weather;
 
+import com.jramoyo.weather.domain.Observation;
+import com.jramoyo.weather.domain.Statistics;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
