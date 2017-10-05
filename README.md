@@ -49,3 +49,4 @@ cd weather-observations
 1. Also, for the sake of simplicity `LogEntryGenerator` only generates integer numeric values.
 1. `LogEntryParser` requires all fields to be valid in order to parse an entry -- this has been done for the sake of time.
 1. `LogFileReader` accepts a "locale" which controls which units to use for **both** distance and temperature.
+1. `main()` methods are attached to both `LogFileGenerator` and `LogFileReader`. Ideally, these should be separate classes.
