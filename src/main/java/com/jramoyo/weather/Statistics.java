@@ -50,7 +50,7 @@ public final class Statistics {
             return;
         }
 
-        BigDecimal temperature = convertTemperature(observation.observatory, observation.temperature);
+        BigDecimal temperature = convertTemperatureToBase(observation.observatory, observation.temperature);
         if (temperature.compareTo(minTemperature) < 0) {
             minTemperature = temperature;
         }
@@ -62,7 +62,11 @@ public final class Statistics {
         sumTemperature = sumTemperature.add(temperature);
     }
 
-    private BigDecimal convertTemperature(String observatory, BigDecimal temperature) {
+    private BigDecimal convertTemperatureToBase(String observatory, BigDecimal temperature) {
+        if (observatory == null) {
+            return temperature;
+        }
+
         switch (observatory) {
             case "AU": // c -> k
                 return temperature.add(BigDecimal.valueOf(273.15));
@@ -76,13 +80,31 @@ public final class Statistics {
         }
     }
 
+    private BigDecimal convertTemperatureToTarget(String observatory, BigDecimal temperature) {
+        if (observatory == null) {
+            return temperature;
+        }
+
+        switch (observatory) {
+            case "AU": // k -> c
+                return temperature.subtract(BigDecimal.valueOf(273.15));
+            case "US": // k -> f
+                return temperature
+                        .subtract(BigDecimal.valueOf(273.15))
+                        .multiply(BigDecimal.valueOf(9.00 / 5.00))
+                        .add(BigDecimal.valueOf(32));
+            default:
+                return temperature;
+        }
+    }
+
     private void readLocation(Observation observation) {
         if (observation.x == null || observation.y == null) {
             return;
         }
 
-        BigDecimal x = convertLocation(observation.observatory, observation.x);
-        BigDecimal y = convertLocation(observation.observatory, observation.y);
+        BigDecimal x = convertDistanceToBase(observation.observatory, observation.x);
+        BigDecimal y = convertDistanceToBase(observation.observatory, observation.y);
 
         if (lastX != null && lastY != null) {
             double x1 = lastX.doubleValue();
@@ -99,12 +121,31 @@ public final class Statistics {
         lastY = y;
     }
 
-    private BigDecimal convertLocation(String observatory, BigDecimal location) {
+    private BigDecimal convertDistanceToBase(String observatory, BigDecimal location) {
+        if (observatory == null) {
+            return location;
+        }
+
         switch (observatory) {
             case "US": // mi -> km
                 return location.multiply(BigDecimal.valueOf(1.60934));
             case "FR": // m  -> km
-                return !location.equals(BigDecimal.ZERO) ? location.divide(BigDecimal.valueOf(1000), BigDecimal.ROUND_HALF_UP) : location;
+                return location.multiply(BigDecimal.valueOf(0.001));
+            default:
+                return location;
+        }
+    }
+
+    private BigDecimal convertDistanceToTarget(String observatory, BigDecimal location) {
+        if (observatory == null) {
+            return location;
+        }
+
+        switch (observatory) {
+            case "US": // km -> mi
+                return location.multiply(BigDecimal.valueOf(0.621371));
+            case "FR": // km -> m
+                return location.multiply(BigDecimal.valueOf(1000));
             default:
                 return location;
         }
@@ -127,18 +168,39 @@ public final class Statistics {
     }
 
     public BigDecimal getMinTemperature() {
-        return round(minTemperature);
+        return getMinTemperature(null);
+    }
+
+    public BigDecimal getMinTemperature(String observatory) {
+        return round(convertTemperatureToTarget(observatory, minTemperature));
     }
 
     public BigDecimal getMaxTemperature() {
-        return round(maxTemperature);
+        return getMaxTemperature(null);
+    }
+
+    public BigDecimal getMaxTemperature(String observatory) {
+        return round(convertTemperatureToTarget(observatory, maxTemperature));
     }
 
     public BigDecimal getMeanTemperature() {
-        return !sumTemperature.equals(BigDecimal.ZERO) ? round(sumTemperature.divide(BigDecimal.valueOf(count), BigDecimal.ROUND_HALF_UP)) : sumTemperature;
+        return getMeanTemperature(null);
+    }
+
+    public BigDecimal getMeanTemperature(String observatory) {
+        if (sumTemperature.equals(BigDecimal.ZERO)) {
+            return round(sumTemperature);
+        }
+
+        BigDecimal meanTemperature = sumTemperature.divide(BigDecimal.valueOf(count), BigDecimal.ROUND_HALF_UP);
+        return round(convertTemperatureToTarget(observatory, meanTemperature));
     }
 
     public BigDecimal getTotalDistanceTravelled() {
-        return totalDistanceTravelled;
+        return getTotalDistanceTravelled(null);
+    }
+
+    public BigDecimal getTotalDistanceTravelled(String observatory) {
+        return round(convertDistanceToTarget(observatory, totalDistanceTravelled));
     }
 }

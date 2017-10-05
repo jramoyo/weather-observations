@@ -85,7 +85,7 @@ public class StatisticsTest {
     }
 
     @Test
-    public void it_converts_temperatures_to_kelvin() {
+    public void it_converts_read_temperatures_to_kelvin() {
         Observation observation1 = new Observation();
         observation1.observatory = "AU";
         observation1.temperature = BigDecimal.valueOf(-173.15); // 100K
@@ -98,13 +98,45 @@ public class StatisticsTest {
         observation3.observatory = "FR";
         observation3.temperature = BigDecimal.valueOf(100);     // 100K
 
+        Observation observation4 = new Observation();
+        observation4.observatory = "PH";
+        observation4.temperature = BigDecimal.valueOf(100);     // 100K
+
         statistics.read(observation1);
         statistics.read(observation2);
         statistics.read(observation3);
+        statistics.read(observation4);
 
         assertThat(statistics.getMinTemperature(), is(new BigDecimal("100.00")));
         assertThat(statistics.getMaxTemperature(), is(new BigDecimal("100.00")));
         assertThat(statistics.getMeanTemperature(), is(new BigDecimal("100.00")));
+    }
+
+    @Test
+    public void it_converts_output_temperatures_to_the_specified_locale() {
+        Observation observation = new Observation();
+        observation.temperature = BigDecimal.valueOf(100); // 100K
+        statistics.read(observation);
+
+        assertThat(statistics.getMinTemperature(), is(new BigDecimal("100.00")));
+        assertThat(statistics.getMaxTemperature(), is(new BigDecimal("100.00")));
+        assertThat(statistics.getMeanTemperature(), is(new BigDecimal("100.00")));
+
+        assertThat(statistics.getMinTemperature("AU"), is(new BigDecimal("-173.15")));
+        assertThat(statistics.getMaxTemperature("AU"), is(new BigDecimal("-173.15")));
+        assertThat(statistics.getMeanTemperature("AU"), is(new BigDecimal("-173.15")));
+
+        assertThat(statistics.getMinTemperature("US"), is(new BigDecimal("-279.67")));
+        assertThat(statistics.getMaxTemperature("US"), is(new BigDecimal("-279.67")));
+        assertThat(statistics.getMeanTemperature("US"), is(new BigDecimal("-279.67")));
+
+        assertThat(statistics.getMinTemperature("FR"), is(new BigDecimal("100.00")));
+        assertThat(statistics.getMaxTemperature("FR"), is(new BigDecimal("100.00")));
+        assertThat(statistics.getMeanTemperature("FR"), is(new BigDecimal("100.00")));
+
+        assertThat(statistics.getMinTemperature("PH"), is(new BigDecimal("100.00")));
+        assertThat(statistics.getMaxTemperature("PH"), is(new BigDecimal("100.00")));
+        assertThat(statistics.getMeanTemperature("PH"), is(new BigDecimal("100.00")));
     }
 
     @Test
@@ -144,11 +176,11 @@ public class StatisticsTest {
     }
 
     @Test
-    public void it_converts_location_to_km() {
+    public void it_converts_read_distance_to_km() {
         Observation observation1 = new Observation();
         observation1.observatory = "AU";
-        observation1.x = BigDecimal.valueOf(100); // 100Km
-        observation1.y = BigDecimal.valueOf(100); // 100Km
+        observation1.x = BigDecimal.valueOf(100);     // 100Km
+        observation1.y = BigDecimal.valueOf(100);     // 100Km
 
         Observation observation2 = new Observation();
         observation2.observatory = "US";
@@ -157,14 +189,36 @@ public class StatisticsTest {
 
         Observation observation3 = new Observation();
         observation3.observatory = "FR";
-        observation3.x = BigDecimal.valueOf(100000); // 100Km
-        observation3.y = BigDecimal.valueOf(100000); // 100Km
+        observation3.x = BigDecimal.valueOf(100000);  // 100Km
+        observation3.y = BigDecimal.valueOf(100000);  // 100Km
 
         statistics.read(observation1);
         statistics.read(observation2);
         statistics.read(observation3);
 
-        assertThat(statistics.getTotalDistanceTravelled(), is(new BigDecimal("0.00")));
+        assertThat(statistics.getTotalDistanceTravelled(), is(new BigDecimal("0.00"))); // zero means location did not change
+    }
+
+    @Test
+    public void it_converts_output_distance_to_the_specified_locale() {
+        Observation observation1 = new Observation();
+        observation1.observatory = "AU";
+        observation1.x = BigDecimal.valueOf(0); // 100Km
+        observation1.y = BigDecimal.valueOf(0); // 100Km
+
+        Observation observation2 = new Observation();
+        observation2.observatory = "AU";
+        observation2.x = BigDecimal.valueOf(100); // 100Km
+        observation2.y = BigDecimal.valueOf(100); // 100Km
+
+        statistics.read(observation1);
+        statistics.read(observation2);
+
+        assertThat(statistics.getTotalDistanceTravelled(), is(new BigDecimal("141.42")));
+        assertThat(statistics.getTotalDistanceTravelled("AU"), is(new BigDecimal("141.42")));
+        assertThat(statistics.getTotalDistanceTravelled("US"), is(new BigDecimal("87.87")));
+        assertThat(statistics.getTotalDistanceTravelled("FR"), is(new BigDecimal("141420.00")));
+        assertThat(statistics.getTotalDistanceTravelled("PH"), is(new BigDecimal("141.42")));
     }
 
     @Test
