@@ -34,6 +34,10 @@ public final class Statistics {
     }
 
     private void readDistribution(Observation observation) {
+        if (observation.observatory == null) {
+            return;
+        }
+
         Integer total = distribution.get(observation.observatory);
         if (total == null) {
             distribution.put(observation.observatory, 1);
