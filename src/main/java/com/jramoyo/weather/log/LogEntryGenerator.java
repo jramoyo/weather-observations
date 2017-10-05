@@ -1,4 +1,4 @@
-package com.jramoyo.weather.test;
+package com.jramoyo.weather.log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
