@@ -9,6 +9,7 @@ import java.util.Map;
 public final class Statistics {
 
     private long count = 0;
+    private long skipped = 0;
     private Date lastTimestamp;
 
     private Map<String, Integer> distribution = new HashMap<>();
@@ -23,6 +24,7 @@ public final class Statistics {
 
     public void read(Observation observation) {
         if (lastTimestamp != null && observation.timestamp.before(lastTimestamp)) {
+            skipped++;
             return;
         }
 
@@ -114,6 +116,10 @@ public final class Statistics {
 
     public long getCount() {
         return count;
+    }
+
+    public long getSkipped() {
+        return skipped;
     }
 
     public Map<String, Integer> getDistribution() {

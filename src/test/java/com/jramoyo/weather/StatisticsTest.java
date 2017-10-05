@@ -182,6 +182,7 @@ public class StatisticsTest {
         statistics.read(observation1); // wrong order
 
         assertThat(statistics.getCount(), is(1L));
+        assertThat(statistics.getSkipped(), is(1L));
     }
 
 }
