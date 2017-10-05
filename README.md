@@ -29,6 +29,14 @@ cd build/distributions/
 unzip weather-observations.zip
 ```
 
+or
+
+```sh
+./gradlew distTar
+cd build/distributions/
+tar -xvf weather-observations.tar
+```
+
 #### Generate Test Data
 
 ```sh
@@ -36,7 +44,7 @@ cd weather-observations
 ./bin/generate-log data.log 1000
 ```
 
-#### Read Log File
+#### Read a Log File
 
 ```sh
 cd weather-observations
